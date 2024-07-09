@@ -1,7 +1,102 @@
 ﻿@page "/"
+@using System.Text
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="input-group mb-3">
+	<input @bind="password" readonly="readonly" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+	<span @onmouseenter="@((changeEv) =>@onEmojiHover("copy"))" 
+		  @onmouseleave="@onEmojiMouseLeave"
+		  class="input-group-text my-clickable-button @onHoverCopyCss" id="basic-addon2">
+		📄
+	</span>
 
-Welcome to your new app.
+	<span @onclick="@handleGeneratePasswordClick"
+		  @onmouseenter="@(() =>@onEmojiHover("generate"))" 
+		  @onmouseleave="@onEmojiMouseLeave"
+		  class="input-group-text my-clickable-button @onHoverGenerateCss" id="basic-addon3">
+		🔄
+	</span>
+
+	<span @onmouseenter="@(() =>@onEmojiHover("save"))" 
+		  @onmouseleave="@onEmojiMouseLeave"
+		  class="input-group-text my-clickable-button @onHoverSaveCss" id="basic-addon4">
+		💾
+	</span>
+</div>
+
+
+<div class="card">
+	<div class="card-header">
+		💾 Saved Passwords
+	</div>
+
+	<div class="card-body">
+		<ul class="list-group mt-3">
+			<li class="list-group-item">An item</li>
+			<li class="list-group-item">A second item</li>
+			<li class="list-group-item">A third item</li>
+			<li class="list-group-item">A fourth item</li>
+			<li class="list-group-item">And a fifth one</li>
+		</ul>
+	</div>
+	
+</div>
+
+
+@code {
+	private string password = string.Empty;
+	private int passwordLenght = 6;
+	private string onHoverCopyCss = string.Empty;
+	private string onHoverGenerateCss = string.Empty;
+	private string onHoverSaveCss = string.Empty;
+
+	private static Random random = new Random();
+	private static StringBuilder stringBuilder = new StringBuilder();
+
+
+	private void handleGeneratePasswordClick()
+	{
+		stringBuilder.Clear();
+
+		for (int i = 0; i < passwordLenght; i++)
+		{
+			stringBuilder.Append(random.Next(0, 10));
+		}
+
+		password = stringBuilder.ToString();
+	}
+
+
+	private void onEmojiHover(string iconType)
+	{
+		switch (iconType)
+		{
+			case "copy":
+				onHoverCopyCss = "bg-secondary";
+				break;
+
+
+			case "generate":
+				onHoverGenerateCss = "bg-secondary";
+				break;
+
+
+			case "save":
+				onHoverSaveCss = "bg-secondary";
+				break;
+
+
+			default:
+
+				break;
+		}
+	}
+
+	private void onEmojiMouseLeave()
+	{
+		onHoverCopyCss = string.Empty;
+		onHoverGenerateCss = string.Empty;
+		onHoverSaveCss = string.Empty;
+	}
+}
