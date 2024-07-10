@@ -4,7 +4,7 @@
 <PageTitle>Home</PageTitle>
 
 <div class="input-group mb-3">
-	<input @bind="password" readonly="readonly" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+	<input @bind="password" readonly="readonly" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
 	<span @onmouseenter="@((changeEv) =>@onEmojiHover("copy"))" 
 		  @onmouseleave="@onEmojiMouseLeave"
 		  class="input-group-text my-clickable-button @onHoverCopyCss" id="basic-addon2">
@@ -18,7 +18,8 @@
 		🔄
 	</span>
 
-	<span @onmouseenter="@(() =>@onEmojiHover("save"))" 
+	<span @onclick="@handleSavePasswordClick"
+		  @onmouseenter="@(() =>@onEmojiHover("save"))" 
 		  @onmouseleave="@onEmojiMouseLeave"
 		  class="input-group-text my-clickable-button @onHoverSaveCss" id="basic-addon4">
 		💾
@@ -33,11 +34,10 @@
 
 	<div class="card-body">
 		<ul class="list-group mt-3">
-			<li class="list-group-item">An item</li>
-			<li class="list-group-item">A second item</li>
-			<li class="list-group-item">A third item</li>
-			<li class="list-group-item">A fourth item</li>
-			<li class="list-group-item">And a fifth one</li>
+			@foreach(var savedPassword in savedPasswords)
+			{
+				<li class="list-group-item">@savedPassword</li>
+			}
 		</ul>
 	</div>
 	
@@ -47,6 +47,9 @@
 @code {
 	private string password = string.Empty;
 	private int passwordLenght = 6;
+	private HashSet<String> savedPasswords = [];
+
+
 	private string onHoverCopyCss = string.Empty;
 	private string onHoverGenerateCss = string.Empty;
 	private string onHoverSaveCss = string.Empty;
@@ -54,14 +57,50 @@
 	private static Random random = new Random();
 	private static StringBuilder stringBuilder = new StringBuilder();
 
+	private bool includeLowercase = true;
+	private bool includeUppercase = true;
+	private bool includeNumbers = true;
+	private bool includeSpecialChars = true;
+
+	private const string lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+	private const string uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private const string numbers = "0123456789";
+	private const string specialCharacters = "!@#$%&*()_+-={};:?";
+
+	private void handleSavePasswordClick()
+	{
+		if (string.IsNullOrEmpty(password) || savedPasswords.Any(x=> x==password))
+			return;
+
+
+		savedPasswords.Add(password);
+
+	}
 
 	private void handleGeneratePasswordClick()
 	{
+		var validChars = new StringBuilder();
+
+		if (includeLowercase)
+			validChars.Append(lowercaseLetters);
+
+		if (includeUppercase)
+			validChars.Append(uppercaseLetters);
+
+		if (includeNumbers)
+			validChars.Append(numbers);
+
+		if (includeSpecialChars)
+			validChars.Append(specialCharacters);
+
+
 		stringBuilder.Clear();
 
 		for (int i = 0; i < passwordLenght; i++)
 		{
-			stringBuilder.Append(random.Next(0, 10));
+			var randomIndex = random.Next(0, validChars.Length);
+
+			stringBuilder.Append(validChars[randomIndex]);
 		}
 
 		password = stringBuilder.ToString();
