@@ -1,29 +1,39 @@
 ﻿@page "/"
 @using System.Text
+@using NK.BlazorWasmStarter.Enums
 
 <PageTitle>Home</PageTitle>
 
-<div class="input-group mb-3">
-	<input @bind="password" readonly="readonly" type="text" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2">
-	<span @onmouseenter="@((changeEv) =>@onEmojiHover("copy"))" 
-		  @onmouseleave="@onEmojiMouseLeave"
-		  class="input-group-text my-clickable-button @onHoverCopyCss" id="basic-addon2">
-		📄
-	</span>
+<div class="card">
+	<div class="card-body">
 
-	<span @onclick="@handleGeneratePasswordClick"
-		  @onmouseenter="@(() =>@onEmojiHover("generate"))" 
-		  @onmouseleave="@onEmojiMouseLeave"
-		  class="input-group-text my-clickable-button @onHoverGenerateCss" id="basic-addon3">
-		🔄
-	</span>
 
-	<span @onclick="@handleSavePasswordClick"
-		  @onmouseenter="@(() =>@onEmojiHover("save"))" 
-		  @onmouseleave="@onEmojiMouseLeave"
-		  class="input-group-text my-clickable-button @onHoverSaveCss" id="basic-addon4">
-		💾
-	</span>
+		<div class="input-group mb-3">
+			<input @bind="password" readonly="readonly" type="text" class="form-control">
+			<span @onmouseenter="@(() => OnEmojiHover("copy"))" @onmouseleave="@OnEmojiMouseLeave" class="input-group-text my-clickable-button @onHoverCopyCss" id="basic-addon2">📄</span>
+			<span @onclick="HandleGeneratePasswordClick" @onmouseenter="@(() => OnEmojiHover("generate"))" @onmouseleave="@OnEmojiMouseLeave" class="input-group-text my-clickable-button @onHoverGenerateCss" id="basic-addon3">🔄</span>
+			<span @onclick="HandleSavePasswordClick" @onmouseenter="@(() => OnEmojiHover("save"))" @onmouseleave="@OnEmojiMouseLeave" class="input-group-text my-clickable-button @onHoverSaveCss" id="basic-addon4">💾</span>
+		</div>
+
+		<div class="mb-3">
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" id="inlineCheckbox1" @oninput="@((args) => HandleCheckBoxOnChange(args,CheckBoxActionType.Numbers))">
+				<label class="form-check-label" for="inlineCheckbox1">Numbers</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" id="inlineCheckbox2" @oninput="@((args) => HandleCheckBoxOnChange(args,CheckBoxActionType.Lowercase))">
+				<label class="form-check-label" for="inlineCheckbox2">Lowercase</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" id="inlineCheckbox3" @oninput="@((args) => HandleCheckBoxOnChange(args,CheckBoxActionType.Uppercase))">
+				<label class="form-check-label" for="inlineCheckbox3">Uppercase</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" id="inlineCheckbox4" @oninput="@((args) => HandleCheckBoxOnChange(args,CheckBoxActionType.SpecialChars))">
+				<label class="form-check-label" for="inlineCheckbox4">Special Chars</label>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -46,7 +56,7 @@
 
 @code {
 	private string password = string.Empty;
-	private int passwordLenght = 6;
+	private int passwordLenght = 12;
 	private HashSet<String> savedPasswords = [];
 
 
@@ -67,7 +77,7 @@
 	private const string numbers = "0123456789";
 	private const string specialCharacters = "!@#$%&*()_+-={};:?";
 
-	private void handleSavePasswordClick()
+	private void HandleSavePasswordClick()
 	{
 		if (string.IsNullOrEmpty(password) || savedPasswords.Any(x=> x==password))
 			return;
@@ -77,7 +87,37 @@
 
 	}
 
-	private void handleGeneratePasswordClick()
+	protected override void OnInitialized()
+	{
+		GeneratePassword();
+
+		base.OnInitialized();
+	}
+
+	private void HandleCheckBoxOnChange(ChangeEventArgs args, CheckBoxActionType actionType)
+	{
+			if (args.Value is null)
+				return;
+
+			var result = actionType switch
+			{
+				CheckBoxActionType.SpecialChars => includeSpecialChars = (bool)args.Value,
+				CheckBoxActionType.Numbers => includeNumbers = (bool)args.Value,
+				CheckBoxActionType.Uppercase => includeUppercase = (bool)args.Value,
+				CheckBoxActionType.Lowercase => includeLowercase = (bool)args.Value,
+				_ => throw new ArgumentException("Geçersiz CheckBoxActionType", nameof(actionType))
+			};
+
+			GeneratePassword();
+	}  
+
+	private void HandleGeneratePasswordClick()
+	{
+		GeneratePassword();
+	}
+
+	
+	private void GeneratePassword()
 	{
 		var validChars = new StringBuilder();
 
@@ -107,7 +147,7 @@
 	}
 
 
-	private void onEmojiHover(string iconType)
+	private void OnEmojiHover(string iconType)
 	{
 		switch (iconType)
 		{
@@ -132,7 +172,7 @@
 		}
 	}
 
-	private void onEmojiMouseLeave()
+	private void OnEmojiMouseLeave()
 	{
 		onHoverCopyCss = string.Empty;
 		onHoverGenerateCss = string.Empty;
