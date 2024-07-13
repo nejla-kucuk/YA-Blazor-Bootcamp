@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using System.Text
+@using NK.BlazorWasmStarter.Components.Icons
 @using NK.BlazorWasmStarter.Enums
 
 <PageTitle>Home</PageTitle>
@@ -37,7 +38,7 @@
 		<div>
 			<p class="mb-1 mt-3">Password Length: <b>@passwordLenght</b></p>
 
-			<input type="range" class="form-range" step="1" min="8" max="50" @bind="passwordLenght" @bind:event="oninput" />
+			<input type="range" class="form-range" step="1" min="8" max="50" @bind="passwordLenght" @oninput="HandleRangeOnChange" />
 		</div>
 	</div>
 </div>
@@ -45,7 +46,7 @@
 
 <div class="card">
 	<div class="card-header">
-		💾 Saved Passwords
+		<MaterialSaveIcon Width="2" Height="2" ColorCode="#EB5B00" AditionalCss="cursor:pointer;" /> Saved Passwords
 	</div>
 
 	<div class="card-body">
@@ -98,6 +99,16 @@
 		GeneratePassword();
 
 		base.OnInitialized();
+	}
+
+	private void HandleRangeOnChange(ChangeEventArgs args)
+	{
+		if (args.Value is null)
+			return;
+
+			passwordLenght = Convert.ToInt32(args.Value);
+
+			GeneratePassword();
 	}
 
 	private void HandleCheckBoxOnChange(ChangeEventArgs args, CheckBoxActionType actionType)
