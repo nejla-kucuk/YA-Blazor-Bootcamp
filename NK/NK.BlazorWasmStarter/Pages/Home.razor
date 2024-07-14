@@ -2,6 +2,8 @@
 @using System.Text
 @using NK.BlazorWasmStarter.Components.Icons
 @using NK.BlazorWasmStarter.Enums
+@inject NavigationManager Navigation
+@inject IToastService ToastService
 
 <PageTitle>Home</PageTitle>
 
@@ -46,12 +48,12 @@
 
 <div class="card">
 	<div class="card-header">
-		<MaterialSaveIcon Width="2" Height="2" ColorCode="#EB5B00" AditionalCss="cursor:pointer;" /> Saved Passwords
+		<MaterialSaveIcon Width="2" Height="2" ColorCode="#EB5B00" OnClick="@HandleSaveIconClick"/> Saved Passwords
 	</div>
 
 	<div class="card-body">
 		<ul class="list-group mt-3">
-			@foreach(var savedPassword in savedPasswords)
+			@foreach(var savedPassword in savedPasswords.Reverse())
 			{
 				<li class="list-group-item">@savedPassword</li>
 			}
@@ -84,6 +86,12 @@
 	private const string numbers = "0123456789";
 	private const string specialCharacters = "!@#$%&*()_+-={};:?";
 
+
+	private void HandleSaveIconClick()
+	{
+		Navigation.NavigateTo("/counter"); // Tılandığında sayfaya yönlendirme işlemi yapılır.
+	}
+
 	private void HandleSavePasswordClick()
 	{
 		if (string.IsNullOrEmpty(password) || savedPasswords.Any(x=> x==password))
@@ -91,6 +99,8 @@
 
 
 		savedPasswords.Add(password);
+
+		ToastService.ShowInfo("The selected password saved!");
 
 	}
 
