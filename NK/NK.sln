@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.BlazorWasmStarter", "NK.BlazorWasmStarter\NK.BlazorWasmStarter.csproj", "{A923CF63-B7DC-499A-8713-5AD3FD39BA89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.BlazorOpenAIStarter", "NK.BlazorOpenAIStarter\NK.BlazorOpenAIStarter.csproj", "{D85FE463-903A-4B53-9935-530CDECE3D57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A923CF63-B7DC-499A-8713-5AD3FD39BA89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A923CF63-B7DC-499A-8713-5AD3FD39BA89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A923CF63-B7DC-499A-8713-5AD3FD39BA89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85FE463-903A-4B53-9935-530CDECE3D57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85FE463-903A-4B53-9935-530CDECE3D57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85FE463-903A-4B53-9935-530CDECE3D57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85FE463-903A-4B53-9935-530CDECE3D57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
