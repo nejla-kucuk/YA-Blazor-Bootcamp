@@ -10,7 +10,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-var openAIKey = builder.Configuration.GetSection("OpenAIApiKey").Value;
+var openAIKey = builder
+                .Configuration
+                .GetSection("OpenAIApiKey")
+                .Value;
 
 builder.Services.AddOpenAIService(settings => settings.ApiKey = openAIKey);
 
