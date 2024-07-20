@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.BlazorWasmStarter", "NK.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.BlazorOpenAIStarter", "NK.BlazorOpenAIStarter\NK.BlazorOpenAIStarter.csproj", "{D85FE463-903A-4B53-9935-530CDECE3D57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.BlazorGiftSuggestionApp", "NK.BlazorGiftSuggestionApp\NK.BlazorGiftSuggestionApp.csproj", "{8243811E-5AF6-4458-AEDF-CE075E534A84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D85FE463-903A-4B53-9935-530CDECE3D57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D85FE463-903A-4B53-9935-530CDECE3D57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D85FE463-903A-4B53-9935-530CDECE3D57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8243811E-5AF6-4458-AEDF-CE075E534A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8243811E-5AF6-4458-AEDF-CE075E534A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8243811E-5AF6-4458-AEDF-CE075E534A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8243811E-5AF6-4458-AEDF-CE075E534A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
