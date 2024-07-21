@@ -1,35 +1,84 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
 
-<div class="flex h-screen">
-    <div role="button" @onclick="@(() => Navigation.NavigateTo("/chatgpt"))" class="w-1/2 flex items-center justify-center transition-transform duration-300 ease-out @leftSectionClasses">
-        <h1 class="text-4xl font-bold text-white">ChatGPT 🤖</h1>
+<div class="flex h-screen items-center justify-center">
+    <div role="button" @onclick="@(() => Navigation.NavigateTo("/chatgpt"))" class="section left-section @leftSectionClasses"
+         @onmouseover="OnMouseOverLeftSection" @onmouseout="OnMouseOutLeftSection">
+        <h1 class="text-5xl font-bold text-white">ChatGPT 🤖</h1>
     </div>
-    <div role="button" @onclick="@(() => Navigation.NavigateTo("/dall-e"))" class="w-1/2 flex items-center justify-center transition-transform duration-300 ease-out @rightSectionClasses"
+    <div role="button" @onclick="@(() => Navigation.NavigateTo("/dall-e"))" class="section right-section @rightSectionClasses"
          @onmouseover="OnMouseOverRightSection" @onmouseout="OnMouseOutRightSection">
-        <h1 class="text-4xl font-bold text-white">Dall-E 🖼️</h1>
+        <h1 class="text-5xl font-bold text-white">Dall-E 🖼️</h1>
     </div>
 </div>
 
 @code {
-    private string leftSectionClasses = "bg-gradient-to-b from-[#4A00E0] to-[#8E2DE2] rounded-lg";
-    private string rightSectionClasses = "bg-gradient-to-b from-[#FF4B2B] to-[#FF416C] blur-sm rounded-lg";
+    private string leftSectionClasses = "bg-gradient-to-b from-[#32CD32] to-[#9ACD32] rounded-full";
+    private string rightSectionClasses = "bg-gradient-to-b from-[#FFD700] to-[#FFA500] blur-sm rounded-full";
+
+    private void OnMouseOverLeftSection()
+    {
+        leftSectionClasses = "bg-gradient-to-b from-[#32CD32] to-[#9ACD32] scale-110 translate-z shadow-lg";
+        rightSectionClasses = "bg-gradient-to-b from-[#FFD700] to-[#FFA500] blur-sm";
+    }
+
+    private void OnMouseOutLeftSection()
+    {
+        leftSectionClasses = "bg-gradient-to-b from-[#32CD32] to-[#9ACD32] rounded-full";
+        rightSectionClasses = "bg-gradient-to-b from-[#FFD700] to-[#FFA500] blur-sm rounded-full";
+    }
 
     private void OnMouseOverRightSection()
     {
-        leftSectionClasses += " blur";
-        rightSectionClasses = "bg-gradient-to-b from-[#FF4B2B] to-[#FF416C] scale-105";
+        leftSectionClasses = "bg-gradient-to-b from-[#32CD32] to-[#9ACD32] blur-sm";
+        rightSectionClasses = "bg-gradient-to-b from-[#FFD700] to-[#FFA500] scale-110 translate-z shadow-lg";
     }
 
     private void OnMouseOutRightSection()
     {
-        leftSectionClasses = "bg-gradient-to-b from-[#4A00E0] to-[#8E2DE2] rounded-lg";
-        rightSectionClasses = "bg-gradient-to-b from-[#FF4B2B] to-[#FF416C] blur-sm rounded-lg";
+        leftSectionClasses = "bg-gradient-to-b from-[#32CD32] to-[#9ACD32] rounded-full";
+        rightSectionClasses = "bg-gradient-to-b from-[#FFD700] to-[#FFA500] blur-sm rounded-full";
     }
 }
+
 <style>
+    .section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60vh; /* Increased size */
+        width: 60vh; /* Increased size */
+        border-radius: 50%;
+        transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; /* Smooth transition */
+        perspective: 1000px; /* Added perspective for 3D effect */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Added shadow for depth */
+    }
+
+    .left-section {
+        position: absolute;
+        left: 30%; /* Adjusted for better centering */
+        transform: translateX(-50%);
+    }
+
+    .right-section {
+        position: absolute;
+        right: 30%; /* Adjusted for better centering */
+        transform: translateX(50%);
+    }
+
     .blur {
         filter: blur(5px);
     }
 
+    .scale-110 {
+        transform: scale(1.10);
+    }
+
+    .translate-z {
+        transform: translateZ(50px); /* Adjust the value as needed */
+    }
+
+    .shadow-lg {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+    }
 </style>
