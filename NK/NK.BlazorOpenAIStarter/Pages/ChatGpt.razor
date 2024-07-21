@@ -3,6 +3,7 @@
 @using OpenAI.ObjectModels
 @using OpenAI.ObjectModels.RequestModels
 @inject IOpenAIService OpenAiService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>ChatGPT</PageTitle>
 
@@ -23,8 +24,7 @@
             <div class="card-body">
                 <h2 class="card-title mb-4">Generated Result</h2>
                 <div class="bg-base-300 p-4 rounded-lg min-h-[100px]">
-                    <pre><code class="text-base-content">
-                            @generatedContent
+                    <pre><code class="text-base-content typing" id="generatedText">
                             </code></pre>
                 </div>
             </div>
@@ -54,7 +54,8 @@
             if (completionResult.Successful)
             {
                 generatedContent = completionResult.Choices.First().Message.Content;
-                Console.WriteLine(completionResult.Choices.First().Message.Content);
+                // Ensure that the text is available for JavaScript to manipulate
+                await JSRuntime.InvokeVoidAsync("typeWriter", "#generatedText", generatedContent, 50);
             }
         }
         catch (Exception e)
