@@ -1,10 +1,11 @@
 ﻿@page "/"
 @using System.ComponentModel.DataAnnotations
 @using System.Text
-@using NK.BlazorGiftSuggestionApp.Components
+@using Markdig
 @using OpenAI.Interfaces
 @using OpenAI.ObjectModels
 @using OpenAI.ObjectModels.RequestModels
+@using NK.BlazorGiftSuggestionApp.Components
 @using NK.BlazorGiftSuggestionApp.Enums
 @inject IOpenAIService OpenAiService
 
@@ -23,7 +24,7 @@
                         <label class="label">
                             <span class="label-text">Relationship</span>
                         </label>
-                        <InputSelect @bind-Value="formModel.Relationship" class="select select-bordered w-full">
+                        <InputSelect @bind-Value="formModel.Relationship" @oninput="HandleRelationshipChange" class="select select-bordered w-full">
                             <option disabled="disabled" selected="selected">Select a Relationship</option>
                             @foreach (var relationship in Enum.GetValues<RelationshipType>())
                             {
@@ -61,6 +62,16 @@
                         </label>
                         <InputNumber @bind-Value="formModel.Age" class="input input-bordered w-full" placeholder="Age" />
                         <ValidationMessage For="@(() => formModel.Age)" />
+                    </div>
+                </div>
+
+                <div class="form-control animate__animated animate__fadeInLeft items-center flex justify-center">
+                    <div class="w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Hobbies</span>
+                        </label>
+                        <InputText @bind-Value="formModel.Hobbies" class="input input-bordered w-full" placeholder="Hobbies" />
+                        <ValidationMessage For="@(() => formModel.Hobbies)" />
                     </div>
                 </div>
 
@@ -104,8 +115,7 @@
 
 @code
 {
-    [CascadingParameter] public IModalService Modal { get; set; } = default!;
-
+    [CascadingParameter] public IModalService Modal { get; set; }
     private bool isLoading = false;
     private FormModel formModel = new FormModel();
 
@@ -131,11 +141,17 @@
             if (completionResult.Successful)
             {
                 var gptContent = completionResult.Choices.First().Message.Content;
-              
+
+                var pipeline = new MarkdownPipelineBuilder().UseBootstrap().Build();
+
+                var htmlContent = Markdown.ToHtml(gptContent, pipeline);
+
                 var parameters = new ModalParameters()
-                            .Add("GeneratedHtml", gptContent);
+                    .Add("GeneratedHtml", htmlContent);
 
                 Modal.Show<GiftResultsModel>(parameters);
+
+                // Handle the successful result (e.g., display suggestions)
             }
         }
         catch (Exception e)
@@ -147,6 +163,22 @@
         {
             isLoading = false;
         }
+    }
+
+    private void HandleRelationshipChange(ChangeEventArgs args)
+    {
+     
+        if (args.Value is null)
+            return;
+
+        var relationship = Enum.Parse<RelationshipType>(args.Value.ToString());
+
+        if (relationship == RelationshipType.Sister)
+            formModel.Gender = Gender.Female;
+
+        if (relationship == RelationshipType.Brother)
+            formModel.Gender = Gender.Male;
+
     }
 
     private static StringBuilder promptBuilder = new();
@@ -163,10 +195,12 @@
 
         promptBuilder.AppendLine($"<Age>{formModel.Age}</Age>");
 
+        promptBuilder.AppendLine($"<Hobbies>{formModel.Hobbies}</Hobbies>");
+
         promptBuilder.AppendLine($"<BudgetInDollars>{formModel.Budget}</BudgetInDollars>");
     }
 
-    private const string AssistantsPrompt = "You're a world-class Birthday gift assistant. You know how to select the best gift for the person and make the person happy! Don't include any extra explanations in your responses!";
+    private const string AssistantsPrompt = "You're a world-class Birthday gift assistant for Turkish people. You know how to select the best gift for the person and make the person happy! Don't be so general. Be a little bit more specific when it comes to gifts. Don't include any extra explanations in your responses!";
     private const string PromptIntroductionText = "Please list seven gift ideas with very short descriptions in Markdown format and add emojis to the beginning of each line that match the gift idea with the specifications below. If I like your suggestions, I'll tip you $5000 for your help.";
 
     protected class FormModel
@@ -184,5 +218,9 @@
 
         [Required, Range(1, 99999999)]
         public double Budget { get; set; } = default;
+
+
+        [Required, MaxLength(150)]
+        public string Hobbies { get; set; } = string.Empty;
     }
 }
