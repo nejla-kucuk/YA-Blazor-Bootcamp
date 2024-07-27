@@ -29,7 +29,7 @@ module.exports = {
       require('@tailwindcss/forms'),
     ],
     daisyui: {
-        themes: ["light", "dark", "cupcake", "synthwave", "valentine"],
+        themes: ["light", "dark", "cupcake", "sunset"],
     }
 }
 
