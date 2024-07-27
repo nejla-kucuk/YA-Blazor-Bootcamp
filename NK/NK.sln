@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.BlazorGiftSuggestionApp"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoTranscribeApp", "VideoTranscribeApp", "{DEB40175-A039-4C99-A48D-6789338AB59D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.VideoTranscribeApp.ConsoleClient", "NK.VideoTranscribeApp.ConsoleClient\NK.VideoTranscribeApp.ConsoleClient.csproj", "{711C7673-B8EA-49C6-872A-030BA8AE3628}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.ConsoleClient", "NK.VideoTranscribeApp.ConsoleClient\NK.VideoTranscribeApp.ConsoleClient.csproj", "{711C7673-B8EA-49C6-872A-030BA8AE3628}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
