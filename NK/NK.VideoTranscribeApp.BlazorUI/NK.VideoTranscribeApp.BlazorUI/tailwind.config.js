@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: ['./**/*.{razor,html,cshtml}', '../NK.VideoTranscribeApp.BlazorUI.Client/**/*.{razor,html,cshtml}'],
+    content: ['./**/*.{razor,html,cshtml}', './NK.VideoTranscribeApp.BlazorUI.Client/**/*.{razor,html,cshtml}'],
   theme: {
       extend: {
           animation: {
