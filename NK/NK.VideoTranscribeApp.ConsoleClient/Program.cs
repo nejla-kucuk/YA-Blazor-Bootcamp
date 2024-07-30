@@ -15,7 +15,6 @@ string audioFilePath = Path.ChangeExtension(videoFilePath, "mp3");
 CancellationTokenSource cts = new CancellationTokenSource();
 
 // CancellationToken
-
 var conversion = await FFmpeg.Conversions.FromSnippet.ExtractAudio(videoFilePath, audioFilePath);
 
 await conversion.Start(cts.Token);
