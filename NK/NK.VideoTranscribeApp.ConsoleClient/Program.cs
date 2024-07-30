@@ -6,7 +6,7 @@ using Xabe.FFmpeg;
 using OpenAI.Managers;
 using OpenAI;
 
-var videoFilePath = "C:\\Users\\alper\\Desktop\\Sam-Bankman-Fried.mp4";
+var videoFilePath = "C:\\Users\\Asus\\Desktop\\Sam-Bankman-Fried.mp4";
 
 // Get audio file path
 // "C:\\Users\\alper\\Desktop\\Sam-Bankman-Fried.mp3";
