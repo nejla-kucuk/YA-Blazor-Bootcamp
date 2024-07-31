@@ -1,4 +1,3 @@
-using NK.VideoTranscribeApp.BlazorUI.Client.Pages;
 using NK.VideoTranscribeApp.BlazorUI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +7,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5038/api/") });
+
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,5 +34,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(NK.VideoTranscribeApp.BlazorUI.Client._Imports).Assembly);
+
+app.MapControllers();
 
 app.Run();
