@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VideoTranscribeApp", "Video
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.ConsoleClient", "NK.VideoTranscribeApp.ConsoleClient\NK.VideoTranscribeApp.ConsoleClient.csproj", "{711C7673-B8EA-49C6-872A-030BA8AE3628}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.VideoTranscribeApp.BlazorUI", "NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI.csproj", "{B79C5F68-BBAC-49F3-A84F-3533F8F290BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.BlazorUI", "NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI.csproj", "{B79C5F68-BBAC-49F3-A84F-3533F8F290BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.VideoTranscribeApp.BlazorUI.Client", "NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI.Client\NK.VideoTranscribeApp.BlazorUI.Client.csproj", "{F501BFCE-4250-496C-AB44-985E150DDC5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.BlazorUI.Client", "NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI.Client\NK.VideoTranscribeApp.BlazorUI.Client.csproj", "{F501BFCE-4250-496C-AB44-985E150DDC5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.PasswordStorageApp.WebAPI", "NK.PasswordStorageApp.WebAPI\NK.PasswordStorageApp.WebAPI.csproj", "{DA09FA57-04C8-449B-99D9-5A243C9A9493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{F501BFCE-4250-496C-AB44-985E150DDC5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F501BFCE-4250-496C-AB44-985E150DDC5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F501BFCE-4250-496C-AB44-985E150DDC5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA09FA57-04C8-449B-99D9-5A243C9A9493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA09FA57-04C8-449B-99D9-5A243C9A9493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA09FA57-04C8-449B-99D9-5A243C9A9493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA09FA57-04C8-449B-99D9-5A243C9A9493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
