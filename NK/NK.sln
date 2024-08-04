@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.Blazo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.VideoTranscribeApp.BlazorUI.Client", "NK.VideoTranscribeApp.BlazorUI\NK.VideoTranscribeApp.BlazorUI.Client\NK.VideoTranscribeApp.BlazorUI.Client.csproj", "{F501BFCE-4250-496C-AB44-985E150DDC5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.PasswordStorageApp.WebAPI", "NK.PasswordStorageApp.WebAPI\NK.PasswordStorageApp.WebAPI.csproj", "{DA09FA57-04C8-449B-99D9-5A243C9A9493}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.PasswordStorageApp.WebAPI", "NK.PasswordStorageApp.WebAPI\NK.PasswordStorageApp.WebAPI.csproj", "{DA09FA57-04C8-449B-99D9-5A243C9A9493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
