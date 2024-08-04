@@ -15,6 +15,29 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
             return Ok(passwords);
         }
 
+        [HttpGet("{passwordId}")]
+        public IActionResult GetById(string passwordId)
+        {
+            var password = _passwords.FirstOrDefault(p => p == passwordId);
+
+            if(string.IsNullOrEmpty(password))
+                return NotFound();
+
+            return Ok(password);
+        }
+
+        [HttpDelete("{passwordId}")]
+        public IActionResult Remove(string passwordId)
+        {
+            var password = _passwords.FirstOrDefault(p => p == passwordId);
+
+            if (string.IsNullOrEmpty(password))
+                return NotFound();
+
+            _passwords.Remove(passwordId);
+
+            return NoContent();
+        }
 
         private static readonly List<string> _passwords = new()
 {
