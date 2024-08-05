@@ -1,4 +1,8 @@
+using BlazorDownloadFile;
 using NK.VideoTranscribeApp.BlazorUI.Components;
+using NK.VideoTranscribeApp.BlazorUI.Services;
+using OpenAI.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,11 +11,22 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5038/api/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5220/api/") });
+
+builder.Services.AddControllers();
+
+var openAIApiKey = builder
+    .Configuration
+    .GetSection("OpenAIApiKey")
+    .Value;
+
+builder.Services.AddOpenAIService(settings => settings.ApiKey = openAIApiKey);
+
+builder.Services.AddScoped<TranscriptionManager>();
+
+builder.Services.AddBlazorDownloadFile(ServiceLifetime.Scoped);
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -33,7 +48,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(NK.VideoTranscribeApp.BlazorUI.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(YA.VideoTranscriberApp.BlazorUI.Client._Imports).Assembly);
 
 app.MapControllers();
 
