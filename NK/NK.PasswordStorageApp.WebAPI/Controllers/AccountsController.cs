@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using NK.PasswordStorageApp.WebAPI.Dtos;
-using NK.PasswordStorageApp.WebAPI.Model;
-using NK.PasswordStorageApp.WebAPI.Persistance;
-using System.Security.Principal;
+using Microsoft.EntityFrameworkCore;
+using NK.PasswordStorageApp.Domain.Dtos;
+using NK.PasswordStorageApp.WebAPI.Persistance.Contexts;
+
+
+
 
 namespace NK.PasswordStorageApp.WebAPI.Controllers
 {
@@ -11,59 +13,77 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
+        private readonly ApplicationDbContext _dbContext;
+
+        public AccountsController(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken) //Asekron uygulamalarda kullanılır. 
         {
 
-            var accounts = FakeDbContext
-                            .Accounts
-                            .ToList();
+            var accounts = await _dbContext
+                                    .Accounts
+                                    .AsNoTracking() //datayı tekrar düzenleyip kaydetmiyoruz. bundan dolayı kullanılır.
+                                    .ToListAsync(cancellationToken);
 
             return Ok(accounts);
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var account = FakeDbContext
+            var account = await _dbContext
                                 .Accounts
-                                .FirstOrDefault(ac => ac.Id == id);
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(ac => ac.Id == id,cancellationToken);
             
             if (account is null)
                 return NotFound();
 
             return Ok(account);
-
-
         }
 
 
         [HttpPost]
-        public IActionResult Create(AccountCreateDto newAccount)
+        public async Task<IActionResult> CreateAsync(AccountCreateDto newAccount, CancellationToken cancellationToken)
         {
             var account = newAccount.ToAccount();
 
-            FakeDbContext
-                          .Accounts
-                          .Add(account);
+            _dbContext
+                      .Accounts
+                      .Add(account);//Ekleme işlemi sekron yapılır.
+
+            await _dbContext.SaveChangesAsync(cancellationToken); //Kaydetme işlemi askron yapılır.
 
             // return Ok(account.Id);
             return Ok(new { data = account.Id, 
                             message = "The account was added successfully!" });
+
         }
 
+
+
         [HttpPut("{id:guid}")]
-        public IActionResult Update(Guid id, AccountUpdateDto updateDto)
+        public async Task<IActionResult> UpdateAsync(Guid id, AccountUpdateDto updateDto, CancellationToken cancellationToken)
         {
             if(id == updateDto.Id)
                 return BadRequest("The id in the URL does not match the id in the body");
 
-            var account = FakeDbContext
+            var account = _dbContext
                           .Accounts
                           .FirstOrDefault(ac => ac.Id == id);
 
-            var UpdatedAccount = updateDto.ToAccount(account); //FakeDbContext.Accounts[index] = updatedAccount;
+            var updatedAccount = updateDto.ToAccount(account);
 
+            /*_dbContext
+                .Accounts
+                .Update(updatedAccount); daha yavaştır zaten ef core bu takibi yapıyor yeniden kaydetmemize gerek yok.
+            */
+
+            await _dbContext.SaveChangesAsync(cancellationToken); //değişen kolonlarda değişiklik yapar. 
 
             // return Ok(account.Id);
             return Ok(new
@@ -75,12 +95,12 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
 
 
         [HttpDelete("{id:guid}")]
-        public IActionResult Remove(Guid id)
+        public async Task<IActionResult> RemoveAsync(Guid id,CancellationToken cancellationToken)
         {
             if(id == Guid.Empty)
                 return BadRequest("id is not valid. Please do not send empty guids for god sake!");
 
-            var account = FakeDbContext
+            var account = _dbContext
                           .Accounts
                           .FirstOrDefault(ac => ac.Id == id);
 
@@ -88,9 +108,11 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
                 return NotFound();
 
 
-             FakeDbContext
+             _dbContext
              .Accounts
              .Remove(account);
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return NoContent();
 
