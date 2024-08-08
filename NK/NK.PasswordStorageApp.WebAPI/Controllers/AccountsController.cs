@@ -27,6 +27,7 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
             var accounts = await _dbContext
                                     .Accounts
                                     .AsNoTracking() //datayı tekrar düzenleyip kaydetmiyoruz. bundan dolayı kullanılır.
+                                    .Select(ac => AccountGetAllDto.MapFromAccount(ac)) //buraya uygun sql sorgusu üretir.
                                     .ToListAsync(cancellationToken);
 
             return Ok(accounts);
