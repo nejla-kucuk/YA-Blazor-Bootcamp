@@ -1,73 +1,76 @@
 ﻿@page "/"
+@using NK.PasswordStorageApp.Domain.Dtos
 @using NK.PasswordStorageApp.Domain.Model
 @inject HttpClient HttpClient
+@inject DialogService DialogService
+@inject NotificationService NotificationService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Create"/>
 
-Welcome to your new app.
 
-@if (accounts is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var account in accounts)
-            {
-                <tr>
-                    <td>@account.Id</td>
-                    <td>@account.Username</td>
-                    <td>@account.Password</td>
-                    <td>@account.Type</td>
-                    <td>
-                        <button @onclick="@(() => HandleRemoveClick(account))" class="btn btn-danger">Remove</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                    Data="@accounts" ColumnWidth="300px">
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Id)" Title="ID" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Username)" Title="UserName" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Password)" Title="Password" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Type)" Title="Type" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.CreatedOn)" Title="Created On" TextAlign="TextAlign.Center" />
 
-}
+            <RadzenDataGridColumn Title="Actions" Frozen="true" Sortable="false" Filterable="false" Width="120px" TextAlign="TextAlign.Center">
+                <Template Context="data">
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" />
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(() => HandleRemoveClickAsync(data))" />
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+
+        </Columns>
+    </RadzenDataGrid>
+
+
 
 @code{
 
-    private List<Account> accounts;
+    private IEnumerable<AccountGetAllDto> accounts = null ;
 
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        accounts = await HttpClient.GetFromJsonAsync<List<Account>>("Accounts");
+        accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+
     }
 
-
-    private async Task HandleRemoveClick(Account account)
+    private async Task HandleRemoveClickAsync(AccountGetAllDto account)
     {
-        var response = await HttpClient.DeleteAsync($"Accounts/{account.Id}");
+        CancellationTokenSource cts = new CancellationTokenSource();
 
-        if (response.IsSuccessStatusCode)
+        var result = await DialogService
+                        .Confirm("Are you sure?", "Deleting...", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if(result is not null && (bool)result)
         {
-            accounts.Remove(account);
+            var response = await HttpClient.DeleteAsync($"Accounts/{account.Id}", cts.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                accounts = accounts.Where(ac => ac.Id != account.Id);
+                // await InvokeAsync(StateHasChanged); Blazord'da durum güncellemesi sağlar.
+                NotificationService.Notify(NotificationSeverity.Success,"The account was deleted successfully.");
+            }
+            else
+            {
+                // Handle error
+                Console.WriteLine("There was an unexpected error occured.");
+                NotificationService.Notify(NotificationSeverity.Error, "An error occurred while deleting the account!");
+            }
+
         }
-        else
-        {
-            // Handle error
-            Console.WriteLine("There was an unexpected error occured.");
-        }
+
     }
-
 }
