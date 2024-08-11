@@ -9,7 +9,7 @@
 
 @if(accounts is null)
 {
-    <p><em>Loading</em></p>
+    <RadzenProgressBarCircular ProgressBarStyle="ProgressBarStyle.Primary" Value="100" Mode="ProgressBarMode.Indeterminate" />
 }
 else{
 
@@ -17,7 +17,7 @@ else{
 
         <h3 class="text-center">Accounts</h3>
 
-        <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Create" Style="margin-bottom:1 rem;" />
+        <RadzenButton Click="HandleAddClickAsync" ButtonStyle="ButtonStyle.Primary" Text="Create" Style="margin-bottom:1 rem;" />
 
         <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
                         Data="@accounts" ColumnWidth="300px">
@@ -58,6 +58,26 @@ else{
 
     }
 
+    private async Task HandleAddClickAsync()
+    {
+        var result = await DialogService.OpenAsync<AccountsAdd>("Account add",
+            new Dictionary<string, object>() { { "IsDialog", true } },
+            new DialogOptions()
+             {
+                    Resizable = true,
+                    Draggable = true,
+                    Width = "700px",
+                    Height = "512px",
+            });
+
+
+        if (result is not null && (bool)result)
+        {
+            accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+        }
+    }
+
+
     private async Task HandleRemoveClickAsync(AccountGetAllDto account)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
@@ -73,13 +93,13 @@ else{
             {
                 accounts = accounts.Where(ac => ac.Id != account.Id);
                 // await InvokeAsync(StateHasChanged); Blazord'da durum güncellemesi sağlar.
-                NotificationService.Notify(NotificationSeverity.Success,"The account was deleted successfully.");
+                NotificationService.Notify(NotificationSeverity.Success,"The account deleted successfully.");
             }
             else
             {
                 // Handle error
                 Console.WriteLine("There was an unexpected error occured.");
-                NotificationService.Notify(NotificationSeverity.Error, "An error occurred while deleting the account!");
+                NotificationService.Notify(NotificationSeverity.Error, "The account not deleted!");
             }
 
         }
