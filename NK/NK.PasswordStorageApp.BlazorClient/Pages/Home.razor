@@ -7,29 +7,41 @@
 
 <PageTitle>Home</PageTitle>
 
-<RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Create"/>
+@if(accounts is null)
+{
+    <p><em>Loading</em></p>
+}
+else{
 
+    <RadzenCard Variant="Variant.Filled">
 
-    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                    Data="@accounts" ColumnWidth="300px">
-        <Columns>
-            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Id)" Title="ID" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Username)" Title="UserName" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Password)" Title="Password" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Type)" Title="Type" TextAlign="TextAlign.Center" />
-            <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.CreatedOn)" Title="Created On" TextAlign="TextAlign.Center" />
+        <h3 class="text-center">Accounts</h3>
 
-            <RadzenDataGridColumn Title="Actions" Frozen="true" Sortable="false" Filterable="false" Width="120px" TextAlign="TextAlign.Center">
-                <Template Context="data">
-                    <RadzenStack Orientation="Orientation.Horizontal">
-                        <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" />
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(() => HandleRemoveClickAsync(data))" />
-                    </RadzenStack>
-                </Template>
-            </RadzenDataGridColumn>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Create" Style="margin-bottom:1 rem;" />
 
-        </Columns>
-    </RadzenDataGrid>
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                        Data="@accounts" ColumnWidth="300px">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Id)" Title="ID" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Username)" Title="UserName" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Password)" Title="Password" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Type)" Title="Type" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.CreatedOn)" Title="Created On" TextAlign="TextAlign.Center" />
+
+                <RadzenDataGridColumn Title="Actions" Frozen="true" Sortable="false" Filterable="false" Width="120px" TextAlign="TextAlign.Center">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" />
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(() => HandleRemoveClickAsync(data))" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+
+            </Columns>
+        </RadzenDataGrid>
+
+    </RadzenCard>
+}
 
 
 
