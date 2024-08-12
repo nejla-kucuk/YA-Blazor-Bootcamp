@@ -6,10 +6,10 @@ namespace NK.PasswordStorageApp.Domain.Dtos
 {
     public class AccountCreateDto
     {
-        [Required, MinLength(6), MaxLength(25)]
+        [Required, MinLength(6), MaxLength(40)]
         public string Username { get; set; }
 
-        [Required, MinLength(6), MaxLength(50)]
+        [Required, MinLength(6), MaxLength(40)]
         public string Password { get; set; }
 
         [Required, AllowedValues(AccountType.Web, AccountType.Mobile, AccountType.Desktop)]
@@ -22,7 +22,8 @@ namespace NK.PasswordStorageApp.Domain.Dtos
                 Id = Ulid.NewUlid().ToGuid(),
                 Username = Username,
                 Password = Password,
-                CreatedOn = DateTime.UtcNow
+                Type = Type,
+                CreatedOn = DateTimeOffset.UtcNow
             };
         }
     }
