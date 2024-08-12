@@ -1,10 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NK.PasswordStorageApp.Domain.Dtos;
 using NK.PasswordStorageApp.WebAPI.Persistance.Contexts;
-
-
 
 
 namespace NK.PasswordStorageApp.WebAPI.Controllers
@@ -44,7 +41,7 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
             if (account is null)
                 return NotFound();
 
-            return Ok(account);
+            return Ok(AccountGetByIdDto.MapFromAccount(account));
         }
 
 
@@ -70,8 +67,8 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateAsync(Guid id, AccountUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            if(id == updateDto.Id)
-                return BadRequest("The id in the URL does not match the id in the body");
+            if(id != updateDto.Id)
+                return BadRequest("The id in the URL does not match the id in the body.");
 
             var account = _dbContext
                           .Accounts
@@ -93,7 +90,6 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
                 message = "The account was added successfully!"
             });
         }
-
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> RemoveAsync(Guid id,CancellationToken cancellationToken)
