@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.PasswordStorageApp.Blazo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.PasswordStorageApp.Domain", "NK.PasswordStorageApp.Domain\NK.PasswordStorageApp.Domain.csproj", "{2207EC44-BE89-4511-BA31-ECD73DB2B17B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordStorageApp.MauiClient", "PasswordStorageApp.MauiClient\PasswordStorageApp.MauiClient.csproj", "{5DB53CA4-E593-43A4-9ECF-B7345D056F24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,12 @@ Global
 		{2207EC44-BE89-4511-BA31-ECD73DB2B17B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2207EC44-BE89-4511-BA31-ECD73DB2B17B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2207EC44-BE89-4511-BA31-ECD73DB2B17B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +86,7 @@ Global
 		{DA09FA57-04C8-449B-99D9-5A243C9A9493} = {7B5A64E4-AFDC-4486-9E35-CB6EC60C8DA4}
 		{E230088A-23DC-4033-9450-246CA5C9B0C2} = {7B5A64E4-AFDC-4486-9E35-CB6EC60C8DA4}
 		{2207EC44-BE89-4511-BA31-ECD73DB2B17B} = {7B5A64E4-AFDC-4486-9E35-CB6EC60C8DA4}
+		{5DB53CA4-E593-43A4-9ECF-B7345D056F24} = {7B5A64E4-AFDC-4486-9E35-CB6EC60C8DA4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8336F73C-0C75-4E3C-8497-2C038E45BFF2}
