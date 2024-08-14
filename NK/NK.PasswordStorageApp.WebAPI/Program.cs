@@ -1,3 +1,4 @@
+using NK.PasswordStorageApp.WebAPI.Hubs;
 using NK.PasswordStorageApp.WebAPI.Persistance.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<ApplicationDbContext>();
 
@@ -38,6 +41,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<AccountsHub>("/hubs/accountsHub");
 
 app.UseCors();
 
