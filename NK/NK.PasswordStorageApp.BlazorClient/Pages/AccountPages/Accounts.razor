@@ -1,4 +1,5 @@
 ﻿@page "/accounts"
+@using Microsoft.AspNetCore.SignalR.Client
 @using NK.PasswordStorageApp.BlazorClient.Services
 @using NK.PasswordStorageApp.Domain.Dtos
 @using NK.PasswordStorageApp.Domain.Model
@@ -48,6 +49,7 @@ else
 
 
 @code {
+    private HubConnection hubConnection;
 
     private IEnumerable<AccountGetAllDto> accounts = null;
 
@@ -56,9 +58,48 @@ else
     {
         await base.OnInitializedAsync();
 
-        accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+        // accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+
+        hubConnection = new HubConnectionBuilder() // Yeni bir SignalR hub bağlantısı oluşturur.
+                            .WithUrl("https://localhost:63583/hubs/accountsHub") // Hub'ın URL'sini belirtir.
+                            .WithAutomaticReconnect() // Otomatik yeniden bağlanma özelliğini ekler.
+                            .ConfigureLogging(config => config.SetMinimumLevel(LogLevel.Information)) // Hata ayıklama için loglama seviyesini ayarlar.
+                            .Build(); // Bağlantıyı oluşturur ve yapılandırır.
+
+
+        // CREATE
+        hubConnection.On<AccountGetAllDto>("AccountCreated", (createdAccount) =>  // "AccountCreated" olayını dinler.
+        {
+            accounts.Append(createdAccount);
+
+            accounts = new List<AccountGetAllDto>(accounts);
+        });
+
+
+
+        // DELETE
+        hubConnection.On<Guid>("AccountRemoved", (deletedAccountId) =>
+        {
+            accounts = accounts.Where(ac => ac.Id != deletedAccountId);
+        });
+
+        await hubConnection.StartAsync();
+
+        accounts = await hubConnection.InvokeAsync<IEnumerable<AccountGetAllDto>>("GetAllAsync"); // Hub'tan tüm hesapları al.
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) 
+        {
+            // Eğer bu ilk render ise 
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
 
     }
+
 
     private async Task HandleAddClickAsync()
     {
@@ -108,6 +149,7 @@ else
 
         if (result is not null && (bool)result)
         {
+            /*
             var response = await HttpClient.DeleteAsync($"Accounts/{account.Id}", cts.Token);
 
             if (response.IsSuccessStatusCode)
@@ -122,6 +164,13 @@ else
                 Console.WriteLine("There was an unexpected error occured.");
                ToastService.Error("The account not deleted!","Error");
             }
+            */
+
+            await hubConnection.InvokeAsync("RemoveAsync", account.Id, cts.Token);
+
+            ToastService.Success("The account deleted successfully.", "Success");
+
+            accounts = accounts.Where(ac => ac.Id != account.Id);
 
         }
 
