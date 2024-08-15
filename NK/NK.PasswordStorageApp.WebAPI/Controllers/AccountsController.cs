@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NK.PasswordStorageApp.Domain.Dtos;
+using NK.PasswordStorageApp.WebAPI.Hubs;
 using NK.PasswordStorageApp.WebAPI.Persistance.Contexts;
 
 
@@ -12,6 +14,8 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
 
+        private readonly IHubContext<AccountsHub> _accountsHubContext;
+
         public AccountsController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -21,13 +25,13 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
         public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken) //Asekron uygulamalarda kullanılır. 
         {
 
-            var accounts = await _dbContext
+            var account = await _dbContext
                                     .Accounts
                                     .AsNoTracking() //datayı tekrar düzenleyip kaydetmiyoruz. bundan dolayı kullanılır.
                                     .Select(ac => AccountGetAllDto.MapFromAccount(ac)) //buraya uygun sql sorgusu üretir.
                                     .ToListAsync(cancellationToken);
 
-            return Ok(accounts);
+            return Ok(account);
         }
 
         [HttpGet("{id:guid}")]
@@ -56,6 +60,14 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
 
             await _dbContext.SaveChangesAsync(cancellationToken); //Kaydetme işlemi askron yapılır.
 
+
+            await _accountsHubContext
+                .Clients
+                .All
+                .SendAsync("AccountCreated", 
+                            AccountGetAllDto.MapFromAccount(account), 
+                            cancellationToken); // SignalR ile yapıldı.
+
             // return Ok(account.Id);
             return Ok(new { data = account.Id, 
                             message = "The account was added successfully!" });
@@ -82,6 +94,13 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
             */
 
             await _dbContext.SaveChangesAsync(cancellationToken); //değişen kolonlarda değişiklik yapar. 
+
+            await _accountsHubContext
+                .Clients
+                .All
+                .SendAsync("AccountUpdated",
+                            AccountGetAllDto.MapFromAccount(account),
+                            cancellationToken); // SignalR ile yapıldı.
 
             // return Ok(account.Id);
             return Ok(new
@@ -110,6 +129,12 @@ namespace NK.PasswordStorageApp.WebAPI.Controllers
              .Remove(account);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            await _accountsHubContext
+                .Clients.All
+                .SendAsync("AccountRemoved",
+                            AccountGetAllDto.MapFromAccount(account),
+                            cancellationToken); // SignalR ile yapıldı.
 
             return NoContent();
 
