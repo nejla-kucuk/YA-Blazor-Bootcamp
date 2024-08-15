@@ -1,0 +1,191 @@
+﻿@page "/accounts"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Logging
+@using PasswordStorageApp.MauiClient.Services
+@using NK.PasswordStorageApp.Domain.Dtos
+@using NK.PasswordStorageApp.Domain.Model
+@inject HttpClient HttpClient
+@inject DialogService DialogService
+@inject IToasterService ToasterService
+
+<PageTitle>Accounts</PageTitle>
+
+@if (accounts is null)
+{
+    <Loading />
+}
+else
+{
+
+    <RadzenCard Variant="Variant.Filled">
+
+        <h3 class="text-center">Accounts</h3>
+
+        <RadzenButton Click="HandleAddClickAsync" ButtonStyle="ButtonStyle.Primary" Text="Create" Style="margin-bottom:1 rem;" />
+
+        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="10" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                        Data="@accounts" ColumnWidth="300px">
+            <Columns>
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Id)" Title="ID" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Username)" Title="UserName" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Password)" Title="Password" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.Type)" Title="Type" TextAlign="TextAlign.Center" />
+                <RadzenDataGridColumn Property="@nameof(AccountGetAllDto.CreatedOn)" Title="Created On" TextAlign="TextAlign.Center" />
+
+                <RadzenDataGridColumn Title="Actions" Frozen="true" Sortable="false" Filterable="false" Width="120px" TextAlign="TextAlign.Center">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" Click="@(() => HandleUpdateClickAsync(data.Id))" />
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(() => HandleRemoveClickAsync(data))" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+
+            </Columns>
+        </RadzenDataGrid>
+
+    </RadzenCard>
+}
+
+
+
+@code {
+    private HubConnection hubConnection;
+
+    private IEnumerable<AccountGetAllDto> accounts = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+
+        hubConnection = new HubConnectionBuilder()
+                            .WithUrl("https://csharpjavadandahaiyi.tailwindcomponents.io/hubs/accountsHub") 
+                            .WithAutomaticReconnect() 
+                            .ConfigureLogging(config => config.SetMinimumLevel(LogLevel.Information)) 
+                            .Build(); 
+
+
+        // CREATE
+        hubConnection.On<AccountGetAllDto>("AccountCreated", async (createdAccount) =>  
+        {
+            accounts = accounts.Append(createdAccount);
+
+            ToasterService.Info($"A new account was created by a different user! {createdAccount.Username}");
+
+            await InvokeAsync(StateHasChanged);
+        });
+
+
+
+        // DELETE
+        hubConnection.On<Guid>("AccountRemoved", async (deletedAccountId) =>
+        {
+            accounts = accounts.Where(ac => ac.Id != deletedAccountId);
+
+            ToasterService.Info($"The account was deleted by a different user! {deletedAccountId}");
+
+            await InvokeAsync(StateHasChanged);
+        });
+
+
+        // UPDATE
+        hubConnection.On<AccountGetAllDto>("AccountUpdated", async (updatedAccount) =>
+        {
+            var tempAccounts = accounts.ToList();
+
+            var updatedAccountsIndex = tempAccounts.FindIndex(ac => ac.Id == updatedAccount.Id);
+
+            tempAccounts[updatedAccountsIndex] = updatedAccount;
+
+            accounts = new List<AccountGetAllDto>(tempAccounts);
+
+            ToasterService.Info($"The account was updated by a different user! {updatedAccount.Id}");
+
+            await InvokeAsync(StateHasChanged);
+        });
+
+
+        await hubConnection.StartAsync();
+
+        accounts = await hubConnection.InvokeAsync<IEnumerable<AccountGetAllDto>>("GetAllAsync"); 
+    }
+
+
+    private async Task HandleAddClickAsync()
+    {
+        var result = await DialogService.OpenAsync<AccountsAdd>("Account add",
+            new Dictionary<string, object>() { { "IsDialog", true } },
+            new DialogOptions()
+                {
+                    Resizable = true,
+                    Draggable = true,
+                    Width = "700px",
+                    Height = "512px",
+                });
+
+
+        if (result is not null && (bool)result)
+        {
+            accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+        }
+    }
+
+    private async Task HandleUpdateClickAsync(Guid id)
+    {
+        var result = await DialogService.OpenAsync<AccountsUpdate>("Account update",
+            new Dictionary<string, object>() { { "IsDialog", true }, { "Id", id } },
+            new DialogOptions()
+                {
+                    Resizable = true,
+                    Draggable = true,
+                    Width = "700px",
+                    Height = "512px",
+                });
+
+
+        if (result is not null && (bool)result)
+        {
+            accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
+        }
+    }
+
+
+    private async Task HandleRemoveClickAsync(AccountGetAllDto account)
+    {
+        CancellationTokenSource cts = new CancellationTokenSource();
+
+        var result = await DialogService
+                        .Confirm("Are you sure?", "Deleting...", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+
+        if (result is not null && (bool)result)
+        {
+            /*
+            var response = await HttpClient.DeleteAsync($"Accounts/{account.Id}", cts.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                accounts = accounts.Where(ac => ac.Id != account.Id);
+                // await InvokeAsync(StateHasChanged); Blazord'da durum güncellemesi sağlar.
+                ToastService.Success( "The account deleted successfully.","Success");
+            }
+            else
+            {
+                // Handle error
+                Console.WriteLine("There was an unexpected error occured.");
+               ToastService.Error("The account not deleted!","Error");
+            }
+            */
+
+            await hubConnection.InvokeAsync("RemoveAsync", account.Id, cts.Token);
+
+            ToasterService.Success("The account deleted successfully.", "Success");
+
+            accounts = accounts.Where(ac => ac.Id != account.Id);
+
+        }
+
+    }
+}
