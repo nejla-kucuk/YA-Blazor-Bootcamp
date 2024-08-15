@@ -61,43 +61,55 @@ else
         // accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
 
         hubConnection = new HubConnectionBuilder() // Yeni bir SignalR hub bağlantısı oluşturur.
-                            .WithUrl("https://localhost:63583/hubs/accountsHub") // Hub'ın URL'sini belirtir.
+                            .WithUrl("https://csharpjavadandahaiyi.tailwindcomponents.io/hubs/accountsHub") // Hub'ın URL'sini belirtir.
                             .WithAutomaticReconnect() // Otomatik yeniden bağlanma özelliğini ekler.
                             .ConfigureLogging(config => config.SetMinimumLevel(LogLevel.Information)) // Hata ayıklama için loglama seviyesini ayarlar.
                             .Build(); // Bağlantıyı oluşturur ve yapılandırır.
 
 
         // CREATE
-        hubConnection.On<AccountGetAllDto>("AccountCreated", (createdAccount) =>  // "AccountCreated" olayını dinler.
+        hubConnection.On<AccountGetAllDto>("AccountCreated", async (createdAccount) =>  // "AccountCreated" olayını dinler.
         {
-            accounts.Append(createdAccount);
+            accounts = accounts.Append(createdAccount);
 
-            accounts = new List<AccountGetAllDto>(accounts);
+            ToastService.Info($"A new account was created by a different user! {createdAccount.Username}");
+
+            await InvokeAsync(StateHasChanged);
         });
 
 
 
         // DELETE
-        hubConnection.On<Guid>("AccountRemoved", (deletedAccountId) =>
+        hubConnection.On<Guid>("AccountRemoved", async (deletedAccountId) =>
         {
             accounts = accounts.Where(ac => ac.Id != deletedAccountId);
+
+            ToastService.Info($"The account was deleted by a different user! {deletedAccountId}");
+
+            await InvokeAsync(StateHasChanged);
         });
+
+
+        // UPDATE
+        hubConnection.On<AccountGetAllDto>("AccountUpdated", async (updatedAccount) =>
+        {
+            var tempAccounts = accounts.ToList();
+
+            var updatedAccountsIndex = tempAccounts.FindIndex(ac => ac.Id == updatedAccount.Id);
+
+            tempAccounts[updatedAccountsIndex] = updatedAccount;
+
+            accounts = new List<AccountGetAllDto>(tempAccounts);
+
+            ToastService.Info($"The account was updated by a different user! {updatedAccount.Id}");
+
+            await InvokeAsync(StateHasChanged);
+        });
+
 
         await hubConnection.StartAsync();
 
         accounts = await hubConnection.InvokeAsync<IEnumerable<AccountGetAllDto>>("GetAllAsync"); // Hub'tan tüm hesapları al.
-    }
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender) 
-        {
-            // Eğer bu ilk render ise 
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-
     }
 
 
@@ -138,7 +150,7 @@ else
             accounts = await HttpClient.GetFromJsonAsync<IEnumerable<AccountGetAllDto>>("Accounts");
         }
     }
-
+   
 
     private async Task HandleRemoveClickAsync(AccountGetAllDto account)
     {
