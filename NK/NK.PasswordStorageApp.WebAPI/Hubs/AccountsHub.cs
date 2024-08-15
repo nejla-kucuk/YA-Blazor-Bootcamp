@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NK.PasswordStorageApp.Domain.Dtos;
@@ -40,7 +40,7 @@ namespace NK.PasswordStorageApp.WebAPI.Hubs
 
             await Clients // SignalR istemcilerini temsil eder.
                 .AllExcept(Context.ConnectionId) // SignalR istemcilerini temsil eder.
-                .SendAsync("AccountCreate",// "AccountCreate" olayını gönderir.
+                .SendAsync("AccountCreated",// "AccountCreate" olayını gönderir.
                             AccountGetAllDto.MapFromAccount(account)); // Hesap bilgisini DTO'ya dönüştürür ve gönderir.
 
         }
