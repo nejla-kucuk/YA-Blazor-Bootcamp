@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NK.ChatGPTClone.Domain.Identity
 {
-    internal class RoleClaim:IdentityRoleClaim<Guid>
+    public class RoleClaim:IdentityRoleClaim<Guid>
     {
     }
 }
