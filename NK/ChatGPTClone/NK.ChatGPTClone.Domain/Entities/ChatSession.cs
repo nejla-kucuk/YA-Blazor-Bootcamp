@@ -1,6 +1,5 @@
 ﻿using NK.ChatGPTClone.Domain.Common;
 using NK.ChatGPTClone.Domain.Enums;
-using NK.ChatGPTClone.Domain.Identity;
 using NK.ChatGPTClone.Domain.ValueObjects;
 
 namespace NK.ChatGPTClone.Domain.Entities
@@ -17,8 +16,7 @@ namespace NK.ChatGPTClone.Domain.Entities
 
         public Guid AppUserId { get; set; }
 
-        public AppUser AppUser { get; set; }
-
+       
 
     }
 }
