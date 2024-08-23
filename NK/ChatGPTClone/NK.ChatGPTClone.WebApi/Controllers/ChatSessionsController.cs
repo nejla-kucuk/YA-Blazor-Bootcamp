@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NK.ChatGPTClone.Domain.Entities;
-using NK.ChatGPTClone.Persistence.Contexts;
+
 using Microsoft.EntityFrameworkCore;
+using NK.ChatGPTClone.Infrastructure.Contexts;
 
 
 namespace NK.ChatGPTClone.WebApi.Controllers
