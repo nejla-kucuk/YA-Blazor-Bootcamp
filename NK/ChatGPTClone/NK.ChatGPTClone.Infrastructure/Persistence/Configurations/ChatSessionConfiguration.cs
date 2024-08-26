@@ -20,7 +20,7 @@ namespace NK.ChatGPTClone.Infrastructure.Configurations
                  .IsRequired();
 
             // Model
-            builder.Property(p => p.Mode)
+            builder.Property(p => p.Model)
                  .IsRequired()
                  .HasConversion<int>();
 
