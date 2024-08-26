@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NK.ChatGPTClone.Domain.Identity;
+using NK.ChatGPTClone.Infrastructure.Identity;
 
 namespace NK.ChatGPTClone.Infrastructure.Configurations
 {
