@@ -10,7 +10,7 @@ namespace NK.ChatGPTClone.Domain.Entities
 
         public string Title { get; set; }
 
-        public GptModelType Mode { get; set; }
+        public GptModelType Model { get; set; }
 
         public List<ChatThread> Threads { get; set; } 
 
