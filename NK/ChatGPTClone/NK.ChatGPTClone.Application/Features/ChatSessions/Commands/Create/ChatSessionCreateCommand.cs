@@ -15,7 +15,7 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
         {
             return new ChatSession
             {
-              Id = Guid.NewGuid(),
+              Id = Ulid.NewUlid().ToGuid(), // IIDService.NewId(), Guid.V7.NewGuid()
               Model = Model,
               AppUserId = userId,
               CreatedOn = DateTimeOffset.UtcNow,
@@ -25,13 +25,13 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
               [
                     new ChatThread()
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = Ulid.NewUlid().ToString(),
                         CreatedOn = DateTimeOffset.UtcNow,
                         Messages =
                         [
                             new ChatMessage()
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = Ulid.NewUlid().ToString(),
                                 Model = Model,
                                 Type = ChatMessageType.System,
                                 Content = "You're a very helpful and happy assistant which loves to help people.",
@@ -39,7 +39,7 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
                             },
                             new ChatMessage()
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = Ulid.NewUlid().ToString(),
                                 Model = Model,
                                 Type = ChatMessageType.User,
                                 Content = Content,
