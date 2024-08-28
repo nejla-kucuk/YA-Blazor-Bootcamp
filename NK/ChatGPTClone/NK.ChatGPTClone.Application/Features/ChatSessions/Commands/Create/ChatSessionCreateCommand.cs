@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using NK.ChatGPTClone.Application.Common.Models.General;
 using NK.ChatGPTClone.Domain.Entities;
 using NK.ChatGPTClone.Domain.Enums;
 using NK.ChatGPTClone.Domain.ValueObjects;
 
 namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
 {
-    public class ChatSessionCreateCommand:IRequest<Guid>
+    public class ChatSessionCreateCommand:IRequest<ResponseDto<Guid>>
     {
         public GptModelType Model { get; set; }
 
