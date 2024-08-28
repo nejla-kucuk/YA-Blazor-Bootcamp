@@ -1,103 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using NK.ChatGPTClone.Domain.Entities;
-
-using Microsoft.EntityFrameworkCore;
-using NK.ChatGPTClone.Infrastructure.Contexts;
-
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create;
+using NK.ChatGPTClone.Application.Features.ChatSessions.Queries.GetAll;
+using NK.ChatGPTClone.Application.Features.ChatSessions.Queries.GetById;
 
 namespace NK.ChatGPTClone.WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ChatSessionsController : ControllerBase
+    public class ChatSessionsController : ApiControllerBase
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public ChatSessionsController(ApplicationDbContext dbContext)
+        public ChatSessionsController(ISender mediatr): base(mediatr)
         {
-            _dbContext = dbContext;
+            
         }
 
-        // GET: api/ChatSessions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ChatSession>>> GetChatSessions()
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _dbContext.ChatSessions.ToListAsync();
+          
+            return Ok(await Mediatr.Send(new ChatSessionGetAllQuery(),cancellationToken));
         }
 
-        // GET: api/ChatSessions/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ChatSession>> GetChatSession(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var chatSession = await _dbContext.ChatSessions.FindAsync(id);
-
-            if (chatSession == null)
-            {
-                return NotFound();
-            }
-
-            return chatSession;
+            return Ok(await Mediatr.Send(new ChatSessionGetByIdQuery(id), cancellationToken));
         }
 
-        // POST: api/ChatSessions
         [HttpPost]
-        public async Task<ActionResult<ChatSession>> PostChatSession(ChatSession chatSession)
+        public async Task<IActionResult> CreateAsync(ChatSessionCreateCommand command, CancellationToken cancellationToken)
         {
-            _dbContext.ChatSessions.Add(chatSession);
-            await _dbContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetChatSession), new { id = chatSession.Id }, chatSession);
+            return Ok(await Mediatr.Send(command, cancellationToken));
         }
 
-        // PUT: api/ChatSessions/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutChatSession(Guid id, ChatSession chatSession)
-        {
-            if (id != chatSession.Id)
-            {
-                return BadRequest();
-            }
-
-            _dbContext.Entry(chatSession).State = EntityState.Modified;
-
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ChatSessionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/ChatSessions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteChatSession(Guid id)
-        {
-            var chatSession = await _dbContext.ChatSessions.FindAsync(id);
-            if (chatSession == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.ChatSessions.Remove(chatSession);
-            await _dbContext.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ChatSessionExists(Guid id)
-        {
-            return _dbContext.ChatSessions.Any(e => e.Id == id);
-        }
     }
 }
