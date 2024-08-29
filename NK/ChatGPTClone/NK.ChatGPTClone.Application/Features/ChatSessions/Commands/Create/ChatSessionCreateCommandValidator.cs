@@ -22,7 +22,9 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
                 .NotEmpty()
                 .WithMessage("Content is required")
                 .MaximumLength(4000)
-                .WithMessage("Content must not exceed 500 characters");
+                .WithMessage("Content must not exceed 500 characters")
+                .MinimumLength(5)
+                .WithMessage("Content must be at least 5 characters."); ;
 
         }
 
