@@ -16,12 +16,8 @@ namespace NK.ChatGPTClone.WebApi.Services
 
         private Guid GetUserId()
         {
-            var userId = _httpContextAccessor
-                         .HttpContext?
-                         .User?
-                         .FindFirstValue("uid");
-            
-            return string.IsNullOrEmpty(userId) ? Guid.Empty : Guid.Parse(userId);
+
+            return Guid.Parse("2798212b-3e5d-4556-8629-a64eb70da4a8");
         }
     }
 }
