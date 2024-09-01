@@ -31,13 +31,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatgptClone", "ChatgptClon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTClone.WebApi", "ChatGPTClone\NK.ChatGPTClone.WebApi\NK.ChatGPTClone.WebApi.csproj", "{C35596C8-19E3-44D1-AFC8-ABA23494458A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTCloneWasmClient", "ChatGPTClone\NK.ChatGPTCloneWasmClient\NK.ChatGPTCloneWasmClient.csproj", "{67459765-D22A-4981-9523-F4515030D003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTClone.WasmClient", "ChatGPTClone\NK.ChatGPTCloneWasmClient\NK.ChatGPTClone.WasmClient.csproj", "{67459765-D22A-4981-9523-F4515030D003}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTClone.Domain", "ChatGPTClone\NK.ChatGPTClone.Domain\NK.ChatGPTClone.Domain.csproj", "{E41558C6-A949-4095-B6B4-CBA6B01C9359}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.ChatGPTClone.Application", "ChatGPTClone\NK.ChatGPTClone.Application\NK.ChatGPTClone.Application.csproj", "{0E7CE0FF-0340-4972-B517-E9300B224635}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTClone.Application", "ChatGPTClone\NK.ChatGPTClone.Application\NK.ChatGPTClone.Application.csproj", "{0E7CE0FF-0340-4972-B517-E9300B224635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NK.ChatGPTClone.Infrastructure", "ChatGPTClone\NK.ChatGPTClone.Infrastructure\NK.ChatGPTClone.Infrastructure.csproj", "{2EBBB668-51E0-4BE1-AB91-016316D8B03F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NK.ChatGPTClone.Infrastructure", "ChatGPTClone\NK.ChatGPTClone.Infrastructure\NK.ChatGPTClone.Infrastructure.csproj", "{2EBBB668-51E0-4BE1-AB91-016316D8B03F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
