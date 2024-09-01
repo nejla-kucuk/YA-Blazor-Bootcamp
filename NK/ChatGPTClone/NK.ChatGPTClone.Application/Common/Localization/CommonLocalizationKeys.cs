@@ -6,7 +6,7 @@
 
         public static string GeneralNotFoundError => nameof(GeneralNotFoundError);
 
-        public static string GeneralInternalServerError => nameof(GeneralInternalServerError);
+        public static string GeneralInternalServerException => nameof(GeneralInternalServerException);
         
         public static string ValidationIsRequired => nameof(ValidationIsRequired);
 
