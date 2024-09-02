@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using NK.ChatGPTClone.Application;
+using NK.ChatGPTClone.Application.Common.Interfaces;
 using NK.ChatGPTClone.Infrastructure;
 using NK.ChatGPTClone.WebApi;
 using NK.ChatGPTClone.WebApi.Filters;
@@ -7,21 +8,24 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Warning()
     .CreateLogger();
 
 try
 {
-    Log.Information("Starting web application");
+    Log.Warning("Starting web application");
 
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Services.AddSerilog();
+
     // Add services to the container.
 
-    builder.Services.AddSerilog();
+    // Controller'larý servis olarak ekle
     builder.Services.AddControllers(opt =>
     {
+        // Global exception filtresini ekle
         opt.Filters.Add<GlobalExceptionFilter>();
     });
 
@@ -36,7 +40,6 @@ try
 
     builder.Services.AddWebApi(builder.Configuration);
 
-
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -48,6 +51,8 @@ try
 
     var requestLocalizationOptions = app.Services
         .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+
+    app.UseRequestLocalization(requestLocalizationOptions);
 
     app.UseHttpsRedirection();
 
