@@ -16,7 +16,7 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
 
             RuleFor(x => x.Content)
                 .NotEmpty().WithMessage(x => localizer[CommonLocalizationKeys.ValidationIsRequired, nameof(x.Content)])
-                .MinimumLength(5).WithMessage(x => localizer[CommonLocalizationKeys.ValidationMustBeBetween, nameof(x.Content)]);
+                .Length(5,4000).WithMessage(x => localizer[CommonLocalizationKeys.ValidationMustBeBetween, nameof(x.Content),5,4000]);
 
         }
 
