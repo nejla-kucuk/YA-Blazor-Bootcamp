@@ -30,7 +30,6 @@ namespace NK.ChatGPTClone.WebApi.Filters
             {
 
                 var responseMessage = _localizer[CommonLocalizationKeys.GeneralValidationException];
-               // var responseMessage = "One or more validation errors occurred.";
 
                 var errors = validationException.Errors
                     .GroupBy(e => e.PropertyName)
@@ -46,11 +45,12 @@ namespace NK.ChatGPTClone.WebApi.Filters
             else
             {
                 // Diğer tüm hatalar için 500 - Internal Server Error
-                context.Result = new ObjectResult(new ResponseDto<string>(_localizer[CommonLocalizationKeys.GeneralInternalServerError], false))
+                context.Result = new ObjectResult(new ResponseDto<string>(_localizer[CommonLocalizationKeys.GeneralInternalServerException], false))
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
             }
         }
+        
     }
 }
