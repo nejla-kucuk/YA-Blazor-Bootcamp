@@ -8,5 +8,9 @@ namespace NK.ChatGPTClone.Application.Common.Interfaces
         
         Task<IdentityLoginResponse> LoginAsync(IdentityLoginRequest request, CancellationToken cancellationToken);
 
+        Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken);
+
+        Task<IdentityRegisterResponse> RegisterAsync(IdentityRegisterRequest request, CancellationToken cancellationToken);
+
     }
 }
