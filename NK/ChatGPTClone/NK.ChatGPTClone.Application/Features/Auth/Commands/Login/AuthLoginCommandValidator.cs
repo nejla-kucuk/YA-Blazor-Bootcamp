@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using NK.ChatGPTClone.Application.Common.Interfaces;
-using NK.ChatGPTClone.Application.Common.Models.Identity;
+
 
 namespace NK.ChatGPTClone.Application.Features.Auth.Commands.Login
 {
