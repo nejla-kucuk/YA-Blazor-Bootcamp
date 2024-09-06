@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NK.ChatGPTClone.Application.Common.Interfaces;
 using NK.ChatGPTClone.Application.Common.Models.Identity;
 using NK.ChatGPTClone.Application.Common.Models.Jwt;
 using NK.ChatGPTClone.Infrastructure.Identity;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace NK.ChatGPTClone.Infrastructure.Services
 {
@@ -26,6 +29,13 @@ namespace NK.ChatGPTClone.Infrastructure.Services
             return await _userManager.CheckPasswordAsync(user, request.Password);
         }
 
+        public Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken)
+        {
+            return _userManager
+                        .Users
+                        .AnyAsync(x=> x.Email == email, cancellationToken);
+        }
+
         public async Task<IdentityLoginResponse> LoginAsync(IdentityLoginRequest request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -38,5 +48,44 @@ namespace NK.ChatGPTClone.Infrastructure.Services
 
             return new IdentityLoginResponse(jwtResponse.Token, jwtResponse.ExpiresAt);
         }
+
+        public async Task<IdentityRegisterResponse> RegisterAsync(IdentityRegisterRequest request, CancellationToken cancellationToken)
+        {
+             var userId = Ulid.NewUlid().ToGuid();
+
+             var user = new AppUser
+             {
+                 Id = userId,
+                 Email = request.Email,
+                 UserName = request.Email,
+                 FirstName = request.FirstName,
+                 LastName = request.LastName,
+                 CreatedByUserId = userId.ToString(),
+                 CreatedOn = DateTimeOffset.UtcNow,
+                 EmailConfirmed = false
+             };
+
+             var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded) CreateAndThrowValidationException(result.Errors);
+            
+            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            return new IdentityRegisterResponse(userId, emailToken);
+        }
+
+        private void CreateAndThrowValidationException(IEnumerable<IdentityError> errors)
+        {
+
+            var errorMessages = errors
+            .Select(x => new ValidationFailure(x.Code, x.Description))
+            .ToArray();
+
+
+            throw new ValidationException(errorMessages);
+        }
     }
 }
+
+
+    
