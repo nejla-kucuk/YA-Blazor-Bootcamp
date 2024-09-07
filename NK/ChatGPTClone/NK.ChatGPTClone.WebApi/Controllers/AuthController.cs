@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NK.ChatGPTClone.Application.Features.Auth.Commands.Login;
+using NK.ChatGPTClone.Application.Features.Auth.Commands.Register;
 
 namespace NK.ChatGPTClone.WebApi.Controllers
 {
@@ -14,6 +15,13 @@ namespace NK.ChatGPTClone.WebApi.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login (AuthLoginCommand command, CancellationToken cancellationToken)
+        {
+            return Ok(await Mediatr.Send(command,cancellationToken));
+        }
+
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register (AuthRegisterCommand command, CancellationToken cancellationToken)
         {
             return Ok(await Mediatr.Send(command,cancellationToken));
         }
