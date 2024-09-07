@@ -24,4 +24,8 @@
     <ProjectReference Include="..\NK.ChatGPTClone.Infrastructure\NK.ChatGPTClone.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>
