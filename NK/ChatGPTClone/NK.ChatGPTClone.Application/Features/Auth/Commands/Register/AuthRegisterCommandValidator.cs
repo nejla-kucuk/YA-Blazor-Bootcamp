@@ -7,8 +7,10 @@ namespace NK.ChatGPTClone.Application.Features.Auth.Commands.Register
     {
         private readonly IIdentityService _identityService;
 
-        public AuthRegisterCommandValidator() 
+        public AuthRegisterCommandValidator(IIdentityService identityService) 
         {
+            _identityService = identityService;
+
             RuleFor(x => x.Email)
              .NotEmpty()
              .EmailAddress();
