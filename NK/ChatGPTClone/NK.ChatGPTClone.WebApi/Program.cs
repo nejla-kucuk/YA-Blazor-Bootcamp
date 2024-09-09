@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using NK.ChatGPTClone.Application;
-using NK.ChatGPTClone.Application.Common.Interfaces;
 using NK.ChatGPTClone.Infrastructure;
 using NK.ChatGPTClone.WebApi;
 using NK.ChatGPTClone.WebApi.Filters;
@@ -38,7 +37,7 @@ try
 
     builder.Services.AddInfrastructure(builder.Configuration);
 
-    builder.Services.AddWebApi(builder.Configuration);
+    builder.Services.AddWebApi(builder.Configuration, builder.Environment);
 
     var app = builder.Build();
 
