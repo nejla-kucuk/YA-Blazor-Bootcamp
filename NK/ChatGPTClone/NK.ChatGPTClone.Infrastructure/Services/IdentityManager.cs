@@ -71,7 +71,7 @@ namespace NK.ChatGPTClone.Infrastructure.Services
             
             var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            return new IdentityRegisterResponse(userId, emailToken);
+            return new IdentityRegisterResponse(userId, emailToken, user.Email);
         }
 
         private void CreateAndThrowValidationException(IEnumerable<IdentityError> errors)
