@@ -7,6 +7,7 @@ using NK.ChatGPTClone.Domain.Settings;
 using NK.ChatGPTClone.Infrastructure.Contexts;
 using NK.ChatGPTClone.Infrastructure.Identity;
 using NK.ChatGPTClone.Infrastructure.Services;
+using Resend;
 
 
 namespace NK.ChatGPTClone.Infrastructure
@@ -33,6 +34,8 @@ namespace NK.ChatGPTClone.Infrastructure
 
             services.AddScoped<IIdentityService, IdentityManager>();
 
+            services.AddScoped<IEmailService, ResendEmailManager>();
+
             services.AddIdentity<AppUser,Role>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -45,6 +48,13 @@ namespace NK.ChatGPTClone.Infrastructure
 
             }).AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
+
+
+            //Resend
+            services.AddOptions();
+            services.AddHttpClient<ResendClient>();
+            services.Configure<ResendClientOptions>(o => o.ApiToken = configuration.GetSection("ResendApiKey").Value!);
+            services.AddTransient<IResend, ResendClient>(); 
 
             return services;
         }
