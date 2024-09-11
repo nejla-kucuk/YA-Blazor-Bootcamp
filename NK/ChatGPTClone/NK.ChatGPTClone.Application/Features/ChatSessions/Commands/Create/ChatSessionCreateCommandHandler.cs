@@ -10,18 +10,23 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create
         private readonly IApplicationDbContext _context;
         private readonly ICurrentUserService _currentUserService;
 
-        public ChatSessionCreateCommandHandler(IApplicationDbContext context)
+        public ChatSessionCreateCommandHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
+            _currentUserService = currentUserService;
         }
 
         public async Task<ResponseDto<Guid>> Handle(ChatSessionCreateCommand request, CancellationToken cancellationToken)
         {
             var chatSession = request.ToChatSession(_currentUserService.UserId);
 
+            // Use IOpenAIService to send the chat session to the OpenAI API
+
+            _context.ChatSessions.Add(chatSession);
+
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new ResponseDto<Guid>(chatSession.Id, "A new chat session was created successfuly.");
+            return new ResponseDto<Guid>(chatSession.Id, "A new chat session was created successfully.");
         }
     }
 }
