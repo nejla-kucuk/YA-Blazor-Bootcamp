@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using NK.ChatGPTClone.Application.Features.ChatSessions.Commands.Create;
@@ -8,6 +9,7 @@ using NK.ChatGPTClone.WebApi.Filters;
 
 namespace NK.ChatGPTClone.WebApi.Controllers
 {
+    [Authorize] // sadece login olanlar bu endpointleri tetikleyebilir
     public class ChatSessionsController : ApiControllerBase
     {
         private readonly IStringLocalizer<GlobalExceptionFilter> _localizer;
@@ -22,6 +24,7 @@ namespace NK.ChatGPTClone.WebApi.Controllers
             return Ok(await Mediatr.Send(new ChatSessionGetAllQuery(), cancellationToken));
         }
 
+        // [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
