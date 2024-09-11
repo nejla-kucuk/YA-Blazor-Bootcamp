@@ -6,6 +6,7 @@ using NK.ChatGPTClone.Application.Common.Models.Jwt;
 using NK.ChatGPTClone.Infrastructure.Identity;
 using FluentValidation;
 using FluentValidation.Results;
+using System.Web;
 
 namespace NK.ChatGPTClone.Infrastructure.Services
 {
@@ -34,6 +35,22 @@ namespace NK.ChatGPTClone.Infrastructure.Services
             return _userManager
                         .Users
                         .AnyAsync(x=> x.Email == email, cancellationToken);
+        }
+
+        public Task<bool> CheckIfEmailVerifiedAsync(string email, CancellationToken cancellationToken)
+        {
+            return _userManager
+                    .Users
+                    .AnyAsync(x => x.Email == email && x.EmailConfirmed, cancellationToken);
+        }
+
+        public async Task<IdentityCreateEmailTokenResponse> CreateEmailTokenAsync(IdentityCreateEmailTokenRequest request, CancellationToken cancellationToken)
+        {
+           var user = await _userManager.FindByEmailAsync(request.Email);
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            return new IdentityCreateEmailTokenResponse(token);
         }
 
         public async Task<IdentityLoginResponse> LoginAsync(IdentityLoginRequest request, CancellationToken cancellationToken)
@@ -72,6 +89,20 @@ namespace NK.ChatGPTClone.Infrastructure.Services
             var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             return new IdentityRegisterResponse(userId, emailToken, user.Email);
+        }
+
+        public async Task<IdentityVerifyEmailResponse> VerifyEmailAsync(IdentityVerifyEmailRequest request, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            var decodedToken = HttpUtility.UrlDecode(request.Token);
+
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+            if (!result.Succeeded)
+                CreateAndThrowValidationException(result.Errors);
+
+            return new IdentityVerifyEmailResponse(user.Email);
         }
 
         private void CreateAndThrowValidationException(IEnumerable<IdentityError> errors)
