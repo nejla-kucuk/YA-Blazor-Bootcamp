@@ -8,6 +8,11 @@ namespace NK.ChatGPTClone.Application.Features.ChatSessions.Queries.GetById
    {
         private readonly IApplicationDbContext _context;
 
+        public ChatSessionGetByIdQueryHandler(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task<ChatSessionGetByIdDto> Handle(ChatSessionGetByIdQuery request, CancellationToken cancellationToken)
         {
             var chatSession = await _context.ChatSessions
